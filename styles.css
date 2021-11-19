@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300&family=PT+Sans:ital@0;1&family=Quicksand:wght@300&display=swap');
+*,
+::before,
+::after {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+}
+
+:root {
+    font-family: 'PT sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #005854;
+}
+
+header {
+    background-color: #c7f7fd;
+    color: #013532;
+    min-height: 15vh;
+    box-shadow: 0px 1px 2px 2px #013532;
+}
+
+h1 {
+    text-align: center;
+    padding-top: 0.2em;
+    font-family: 'Cairo';
+}
+
+form {
+    min-height: 15vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #fff;
+}
+
+input {
+    border: 1px solid #ccc;
+}
+
+#word {
+    height: 30px;
+    width: 180px;
+    border-radius: 5px;
+    padding-left: 1em;
+}
+
+#submit {
+    background-color: #c7f7fd;
+    color: #013532;
+    margin-left: 0.5em;
+    padding: 0.4em 2em;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+#submit:active {
+    opacity: .9;
+}
+
+main .definations {
+    width: 80vw;
+    margin-left: 10vw;
+    padding: 2em 0em 0em 2em;
+    background-color: #fff;
+    min-height: 80vh;
+    position: relative;
+}
+
+main .searching,
+main .error {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    min-height: 36px;
+    background-color: #fff;
+    border-bottom: 1px solid #000;
+    transform-origin: top;
+}
+
+main .searching {
+    transition: 300ms;
+    z-index: 4;
+    transform-origin: top;
+}
+
+main .error {
+    text-align: center;
+    color: rgba(255, 0, 0, 0.603);
+    transition: 1s;
+    transform-origin: bottom;
+}
+
+main .searching.complete,
+main .error.complete {
+    transform: scaleY(0);
+}
+
+main .searching p {
+    text-align: center;
+    font-size: 2ch;
+}
+
+.searching .circles {
+    height: 10px;
+    width: 9ch;
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+.searching .circles div {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: #01353270;
+}
+
+.searching .circles div.active {
+    background-color: #013532;
+    transform: scale(1.2);
+}
+
+#icon {
+    cursor: pointer;
+}
+
+#phonetic {
+    margin-top: 2em;
+}
+
+ol {
+    list-style-position: inside;
+    padding-bottom: 2em;
+}
+
+ol li {
+    --color: #013532;
+    border-bottom: 1px solid #ccc;
+    margin-top: 1em;
+    padding-bottom: 1em;
+    line-height: 2;
+    position: relative;
+}
+
+ol li::after {
+    position: absolute;
+    content: '';
+    height: 80%;
+    width: 3px;
+    top: 10%;
+    left: -15px;
+    background-color: var(--color);
+    border-radius: 2px;
+}
+
+ol li:hover {
+    border-color: #343434;
+    --color: #026d68;
+}
+
+ol li h2 {
+    font-weight: lighter;
+    font-size: 1.2em;
+    text-decoration: underline;
+}
+
+#example {
+    font-style: italic;
+}
+
+#synonyms {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#synonyms span {
+    background-color: rgb(217, 255, 255);
+    margin: 3px 0em 0em 1em;
+    padding: 0px 2px;
+    border-radius: 5px;
+    height: 20px;
+    font-size: 0.7em;
+    cursor: pointer;
+}
+
+footer {
+    min-height: 10vh;
+    background-color: #013532;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    color: #fff;
+}
+
+#red {
+    color: red;
+}

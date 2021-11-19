@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <!-- <script src="https://kit.fontawesome.com/9f145c69b6.js" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="/fonts/css/all.css">
+    <script src="app.js" defer></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <h1>English Dictionary <i class="fas fa-book-open"></i></h1>
+    </header>
+    <main>
+        <form>
+            <input type="text" id="word" spellcheck="true" placeholder="Search words here...">
+            <input type="submit" value="Search" id="submit">
+        </form>
+        <section class="definations">
+            <article class="searching complete">
+                <p>Searching Word</p>
+                <div class="circles">
+                    <div class="active"></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </article>
+            <p class="error complete">
+                Ooops! We did not find the word,try searching for another word
+            </p>
+            <p id="phonetic"></p>
+            <audio src=""></audio>
+            <ol></ol>
+        </section>
+    </main>
+    <footer>
+        <p>Made With <span id="red">&hearts; </span> By Peter </p>
+    </footer>
+</body>
+
+</html>
