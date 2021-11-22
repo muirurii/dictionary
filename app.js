@@ -1,66 +1,79 @@
-const wordResponse = async(word) => {
+const wordResponse = async word => {
     const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
     const data = await response.json();
     return data;
 }
 
-const submitEvent = (e) => {
-    e.preventDefault();
-    const word = wordElement.value;
-    fetchData(word);
-}
 const fetchData = (word) => {
     searching.classList.remove('complete');
+    searching.querySelector('p').textContent = `Searching meaning of ${word}`;
+    ol.innerHTML = '';
+    phonetic.innerHTML = '';
+
     wordResponse(word)
         .then(data => {
             const phonetic = data[0].phonetics[0].text;
             const audiosrc = data[0].phonetics[0].audio;
-            if (phonetic) renderphoneticAndAudio(phonetic, audiosrc);
+            if (phonetic) renderphoneticAndAudio(word, phonetic, audiosrc);
             return data;
         })
         .then(data => {
-            ol.innerHTML = '';
             data[0].meanings.forEach(meaning => {
                 meaning.definitions.forEach(def => {
                     let synonyms = 'Synonyms:';
+                    let antonyms = 'Antonyms:';
                     let example;
-                    if (def.synonyms.length > 0) {
-                        def.synonyms.forEach(syn => synonyms += `<span class="synonym">${syn}</span>`);
+                    if (def.synonyms.length) {
+                        def.synonyms.forEach(syn => synonyms += `<span class="related-word">${syn}</span>`);
                     } else {
                         synonyms = '';
+                    }
+                    if (def.antonyms.length) {
+                        def.antonyms.forEach(ant => antonyms += `<span class="related-word">${ant}</span>`);
+                    } else {
+                        antonyms = '';
                     }
                     if (def.example) {
                         example = `<strong>Example:</strong> ${def.example}`
                     } else {
                         example = '';
                     }
-                    renderDefinationsToPage(meaning.partOfSpeech, def.definition, example, synonyms)
+                    renderDefinationsToPage(meaning.partOfSpeech, def.definition, example, antonyms, synonyms);
                 })
-            })
+            });
             searching.classList.add('complete');
-            return data;
+            wordElement.value = '';
         })
         .catch(err => {
             searching.classList.add('complete');
             error.classList.remove('complete');
             setTimeout(() => error.classList.add('complete'), 5000);
-        })
+        });
 }
-const renderDefinationsToPage = (partOfSpeech, definition, example, synonyms) => {
-    ol.innerHTML += `<li>
-    <h2>${partOfSpeech}</h2>
+const renderDefinationsToPage = (partOfSpeech, definition, example, antonyms, synonyms) => {
+    ol.innerHTML +=
+        `<li>
+        <h2>${partOfSpeech}</h2>
         <p id="meaning">Meaning: ${definition}</p>
         <p id="example">${example}</p>
-        <div id="synonyms">${synonyms}</div>
-</li>`
+        <div class="related-words">${antonyms}</div>
+        <div class="related-words">${synonyms}</div>
+    </li>`
 }
-const renderphoneticAndAudio = (text, source) => {
+const renderphoneticAndAudio = (word, text, source) => {
     phonetic.innerHTML = `
-        <label for="audio">${text}</label>
-            <i class="fas fa-volume-up" id="icon"></i>`;
+        <label><strong>${word}</strong> [<em>${text}</em>]</label>
+        <i class="fas fa-volume-up" id="icon"></i>`;
     audio.src = source;
 
-    document.querySelector('#icon').addEventListener('click', () => audio.play());
+    const audioIcon = document.querySelector('#icon');
+    audioIcon.addEventListener('click', () => {
+        audio.play();
+        audioIcon.setAttribute('style', 'color:#038');
+    });
+    audio.addEventListener('ended', () => {
+        audioIcon.setAttribute('style', 'color:#000');
+    })
 }
 
 const audio = document.querySelector('audio');
@@ -68,21 +81,27 @@ const phonetic = document.querySelector('#phonetic');
 const ol = document.querySelector('ol');
 const form = document.querySelector('form');
 const wordElement = document.querySelector('#word');
+const error = document.querySelector('.error');
 
-form.addEventListener('submit', submitEvent);
+//Events
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!wordElement.value) return;
+    const word = wordElement.value;
+    fetchData(word);
+});
 
 ol.addEventListener('click', (e) => {
-        if (e.target.classList.contains('synonym')) {
-            fetchData(e.target.textContent);
-        }
-    })
-    // audio.play()
+    if (e.target.classList.contains('related-word')) {
+        fetchData(e.target.textContent);
+    }
+});
 
 //Search Animation
 
 const circles = document.querySelector('.circles');
 const searching = document.querySelector('.searching');
-const error = document.querySelector('.error');
 let forwardDirection = true;
 
 const animateCircles = () => {
