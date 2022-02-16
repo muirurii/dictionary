@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400&family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/9f145c69b6.js" crossorigin="anonymous"></script>
     <script src="app.js" defer></script>
     <title>Dictionary</title>
@@ -17,12 +20,15 @@
     </header>
     <main>
         <form>
-            <input type="text" id="word" spellcheck="true" placeholder="Search words here...">
-            <input type="submit" value="Search" id="submit">
+            <div>
+                <input type="text" id="word" spellcheck="true" placeholder="Search words here...">
+                <button class="clear" type="reset">x</button>
+            </div>
+            <button type="submit" id="submit"><i class="fas fa-search"></i></button>
         </form>
         <section class="definations">
             <article class="searching complete">
-                <p>Searching Meaning Of</p>
+                <p></p>
                 <div class="circles">
                     <div class="active"></div>
                     <div></div>
@@ -31,17 +37,15 @@
                     <div></div>
                 </div>
             </article>
-            <p class="error complete">
-                Something went wrong!,try searching another word
-            </p>
+            <p class="error complete"></p>
             <p id="phonetic"></p>
             <audio src=""></audio>
             <ol></ol>
         </section>
     </main>
     <footer>
-        <p>Made With <span id="red">&hearts; </span> By Peter </p>
-        <p><a href="https://dictionaryapi.dev">Powered By Dictionary API</a></p>
+        <p>Made With <span id="red">&hearts; </span> By <a href="https://github.com/muirurii">Peter</a></p>
+        <p><a href="https://dictionaryapi.dev" target="_blank" referrerpolicy="no-referer">Powered By Dictionary API</a></p>
     </footer>
 </body>
 
