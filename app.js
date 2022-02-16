@@ -1,64 +1,83 @@
+const audio = document.querySelector('audio');
+const phonetic = document.querySelector('#phonetic');
+const ol = document.querySelector('ol');
+const form = document.querySelector('form');
+const wordElement = document.querySelector('#word');
+const clearButton = document.querySelector('.clear');
+const error = document.querySelector('.error');
+
+
 const wordResponse = async word => {
-    const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    const data = await response.json();
-    return data;
+    setSearching(word);
+    const circleInterval = setInterval(animateCircles, 100);
+
+    try {
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        searching.classList.add('complete');
+        clearInterval(circleInterval);
+
+        if (response.status === 404) {
+            setError('Word not found try searching another word');
+            return;
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        searching.classList.add('complete');
+        setError('Please check your internet connection and try again');
+    }
 }
 
-const fetchData = (word) => {
+const setError = (message) => {
+    error.textContent = message;
+    error.classList.remove('complete');
+    setTimeout(() => error.classList.add('complete'), 5000);
+}
+
+const setSearching = word => {
+    error.classList.add('complete');
     searching.classList.remove('complete');
-    searching.querySelector('p').textContent = `Searching meaning of ${word}`;
+    searching.querySelector('p').textContent = `Searching  ${word}`;
+    wordElement.value = '';
     ol.innerHTML = '';
     phonetic.innerHTML = '';
-
-    wordResponse(word)
-        .then(data => {
-            const phonetic = data[0].phonetics[0].text;
-            const audiosrc = data[0].phonetics[0].audio;
-            if (phonetic) renderphoneticAndAudio(word, phonetic, audiosrc);
-            return data;
-        })
-        .then(data => {
-            data[0].meanings.forEach(meaning => {
-                meaning.definitions.forEach(def => {
-                    let synonyms = 'Synonyms:';
-                    let antonyms = 'Antonyms:';
-                    let example;
-                    if (def.synonyms.length) {
-                        def.synonyms.forEach(syn => synonyms += `<span class="related-word">${syn}</span>`);
-                    } else {
-                        synonyms = '';
-                    }
-                    if (def.antonyms.length) {
-                        def.antonyms.forEach(ant => antonyms += `<span class="related-word">${ant}</span>`);
-                    } else {
-                        antonyms = '';
-                    }
-                    if (def.example) {
-                        example = `<strong>Example:</strong> ${def.example}`
-                    } else {
-                        example = '';
-                    }
-                    renderDefinationsToPage(meaning.partOfSpeech, def.definition, example, antonyms, synonyms);
-                })
-            });
-            searching.classList.add('complete');
-            wordElement.value = '';
-        })
-        .catch(err => {
-            searching.classList.add('complete');
-            error.classList.remove('complete');
-            setTimeout(() => error.classList.add('complete'), 5000);
-        });
+    clearButton.className = 'clear';
 }
+
+const fetchData = async word => {
+
+    const wordObj = await wordResponse(word);
+
+    const phoneticText = wordObj[0].phonetics[0].text;
+    const audiosrc = wordObj[0].phonetics[0].audio;
+    if (phoneticText) renderphoneticAndAudio(word, phoneticText, audiosrc);
+
+    wordObj[0].meanings.forEach(meaning => {
+        meaning.definitions.forEach(def => {
+
+            const synonyms = def.synonyms.length ? (
+                def.synonyms.reduce((a, b) => a + `<span class="related-word">${b}</span>`, 'Synonyms:')
+            ) : '';
+            const antonyms = def.synonyms.length ? (
+                def.antonyms.reduce((a, b) => a + `<span class="related-word">${b}</span>`, 'Synonyms:')
+            ) : '';
+            const example = def.example ? `<strong>Example:</strong> ${def.example}` : '';
+            renderDefinationsToPage(meaning.partOfSpeech, def.definition, example, antonyms, synonyms);
+
+        });
+    });
+}
+
 const renderDefinationsToPage = (partOfSpeech, definition, example, antonyms, synonyms) => {
     ol.innerHTML +=
         `<li>
-        <h2>${partOfSpeech}</h2>
-        <p id="meaning">Meaning: ${definition}</p>
-        <p id="example">${example}</p>
-        <div class="related-words">${antonyms}</div>
-        <div class="related-words">${synonyms}</div>
-    </li>`
+            <h2>${partOfSpeech}</h2>
+            <p id="meaning">Meaning: ${definition}</p>
+            <p id="example">${example}</p>
+            <div class="related-words">${antonyms}</div>
+            <div class="related-words">${synonyms}</div>
+         </li>`
 }
 const renderphoneticAndAudio = (word, text, source) => {
     phonetic.innerHTML = `
@@ -76,12 +95,6 @@ const renderphoneticAndAudio = (word, text, source) => {
     })
 }
 
-const audio = document.querySelector('audio');
-const phonetic = document.querySelector('#phonetic');
-const ol = document.querySelector('ol');
-const form = document.querySelector('form');
-const wordElement = document.querySelector('#word');
-const error = document.querySelector('.error');
 
 //Events
 
@@ -98,11 +111,20 @@ ol.addEventListener('click', (e) => {
     }
 });
 
+wordElement.addEventListener('keyup', (e) => {
+    clearButton.className = e.target.value.trim().length === 0 ? 'clear' : 'clear show';
+});
+
+clearButton.addEventListener('click', (e) => {
+    e.target.classList.remove('show');
+});
+
 //Search Animation
 
 const circles = document.querySelector('.circles');
 const searching = document.querySelector('.searching');
 let forwardDirection = true;
+
 
 const animateCircles = () => {
     const activeCircle = circles.querySelector('.active');
@@ -121,8 +143,5 @@ const animateCircles = () => {
             activeCircle.classList.remove('active');
             activeCircle.previousElementSibling.classList.add('active');
         }
-
     }
 }
-
-setInterval(animateCircles, 100);
