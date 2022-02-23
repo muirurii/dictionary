@@ -48,7 +48,7 @@ const setSearching = word => {
 const fetchData = async word => {
 
     const wordObj = await wordResponse(word);
-
+    console.log(wordObj[0])
     const phoneticText = wordObj[0].phonetics[0].text;
     const audiosrc = wordObj[0].phonetics[0].audio;
     if (phoneticText) renderphoneticAndAudio(word, phoneticText, audiosrc);
@@ -56,14 +56,14 @@ const fetchData = async word => {
     wordObj[0].meanings.forEach(meaning => {
         meaning.definitions.forEach(def => {
 
-            const synonyms = def.synonyms.length ? (
-                def.synonyms.reduce((a, b) => a + `<span class="related-word">${b}</span>`, 'Synonyms:')
-            ) : '';
-            const antonyms = def.synonyms.length ? (
-                def.antonyms.reduce((a, b) => a + `<span class="related-word">${b}</span>`, 'Synonyms:')
-            ) : '';
+            // const synonyms = def.synonyms.length ? (
+            //     def.synonyms.reduce((a, b) => a + `<span class="related-word">${b}</span>`, 'Synonyms:')
+            // ) : '';
+            // const antonyms = def.synonyms.length ? (
+            //     def.antonyms.reduce((a, b) => a + `<span class="related-word">${b}</span>`, 'Atonyms:')
+            // ) : '';
             const example = def.example ? `<strong>Example:</strong> ${def.example}` : '';
-            renderDefinationsToPage(meaning.partOfSpeech, def.definition, example, antonyms, synonyms);
+            renderDefinationsToPage(meaning.partOfSpeech, def.definition, example);
 
         });
     });
@@ -75,8 +75,6 @@ const renderDefinationsToPage = (partOfSpeech, definition, example, antonyms, sy
             <h2>${partOfSpeech}</h2>
             <p id="meaning">Meaning: ${definition}</p>
             <p id="example">${example}</p>
-            <div class="related-words">${antonyms}</div>
-            <div class="related-words">${synonyms}</div>
          </li>`
 }
 const renderphoneticAndAudio = (word, text, source) => {
